@@ -16,11 +16,12 @@ jobs:
   # This workflow contains a single job called "build"
   build-ubuntu:
     # The type of runner that the job will run on
-    name: Build, Test on Ubuntus
+    name: Build and test on ${{ matrix.os }} ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
+        arch: [aarch64, armv7]
         os: [ubuntu-18.04, ubuntu-20.04, ubuntu-latest]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -29,11 +30,11 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
+    - uses: uraimo/run-on-arch-action@v2
+      with:
+        arch: ${{ matrix.arch }}
 
     # Runs a single command using the runners shell
-    - name: Install Deps
-      env:
-        ACCEPT_EULA: Y
       run: |
         sudo apt-get update
         sudo env ACCEPT_EULA=Y apt-get upgrade
